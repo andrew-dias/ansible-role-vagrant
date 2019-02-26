@@ -3,3 +3,5 @@ vagrant_version: "2.2.3"
 vagrant_pkg: "vagrant_{{ vagrant_version }}_x86_64.deb"
 vagrant_pkg_url: "https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/{{ vagrant_pkg }}"
 vagrant_checksum: sha256:2b8392dfc02d161f674dde7ad08297e2831b233b14b6db6bb12ac12ae9d90f7f
+
+vagrant_home: "{{ ansible_env.HOME }}/.vagrant.d"

@@ -1,26 +1,35 @@
 ---
-- name: Create temporary download directory
-  tempfile:
-    state: directory
-    suffix: ".vagrant_download"
-  register: vagrant_download_dir
-  changed_when: no
+- name: Check if Vagrant is already installed
+  stat:
+    path: "{{ vagrant_home }}"
+  register: st_vagrant
 
-- name: Download Vagrant package
-  get_url:
-    url: "{{ vagrant_pkg_url }}"
-    dest: "{{ vagrant_download_dir.path }}/{{ vagrant_pkg }}"
-    checksum: "{{ vagrant_checksum }}"
-    mode: 0644
-  become: yes
+- name: Install
+  block:
+    - name: Create temporary download directory
+      tempfile:
+        state: directory
+        suffix: ".vagrant_download"
+      register: vagrant_download_dir
+      changed_when: no
 
-- name: Install Vagrant
-  apt:
-    deb: "{{ vagrant_download_dir.path }}/{{ vagrant_pkg }}"
-  become: yes
+    - name: Download Vagrant package
+      get_url:
+        url: "{{ vagrant_pkg_url }}"
+        dest: "{{ vagrant_download_dir.path }}/{{ vagrant_pkg }}"
+        checksum: "{{ vagrant_checksum }}"
+        mode: 0644
+      become: yes
 
-- name: Delete temporary download directory
-  file:
-    path: "{{ vagrant_download_dir.path }}"
-    state: absent
-  changed_when: no
+    - name: Install Vagrant
+      apt:
+        deb: "{{ vagrant_download_dir.path }}/{{ vagrant_pkg }}"
+      become: yes
+
+  when: st_vagrant.stat.exists == False
+  always:
+    - name: Delete temporary download directory
+      file:
+        path: "{{ vagrant_download_dir.path }}"
+        state: absent
+      changed_when: no
