@@ -1,5 +1,8 @@
-**~
-Dockerfile.*
+
+# Created by https://www.gitignore.io/api/ansible
+# Edit at https://www.gitignore.io/?templates=ansible
+
+### Ansible ###
 *.retry
-requirements.yml
-**.swp
+
+# End of https://www.gitignore.io/api/ansible
